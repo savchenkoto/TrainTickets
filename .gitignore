@@ -1,0 +1,12 @@
+.idea/
+out/
+lib/
+
+*.class
+*.log
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
