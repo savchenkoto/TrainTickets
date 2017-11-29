@@ -13,12 +13,13 @@ import java.util.List;
 public class StoppingDaoImpl implements BaseDaoInterface<Stopping, Integer> {
 
     @Override
-    public void add(Stopping stopping) {
+    public int add(Stopping stopping) {
+        int result = 0;
         Session session = null;
         try {
             session = HibernateUtils.getSessionFactory().openSession();
             session.beginTransaction();
-            session.save(stopping);
+            result = (Integer) session.save(stopping);
             session.getTransaction().commit();
         } catch (Exception e) {
             if (session != null) {
@@ -29,6 +30,7 @@ public class StoppingDaoImpl implements BaseDaoInterface<Stopping, Integer> {
             if (session != null){
                 session.close();
             }
+            return result;
         }
     }
 

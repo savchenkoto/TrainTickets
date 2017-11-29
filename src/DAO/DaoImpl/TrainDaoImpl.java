@@ -12,12 +12,13 @@ import java.util.List;
 public class TrainDaoImpl implements BaseDaoInterface<Train, Integer> {
 
     @Override
-    public void add(Train train) {
+    public int add(Train train) {
+        Integer result = 0;
         Session session = null;
         try {
             session = HibernateUtils.getSessionFactory().openSession();
             session.beginTransaction();
-            session.save(train);
+            result = (Integer)session.save(train);
             session.getTransaction().commit();
         } catch (Exception e) {
             if (session != null) {
@@ -28,6 +29,7 @@ public class TrainDaoImpl implements BaseDaoInterface<Train, Integer> {
             if (session != null){
                 session.close();
             }
+            return result;
         }
     }
 

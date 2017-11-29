@@ -12,12 +12,13 @@ import java.util.List;
 
 public class StationDaoImpl implements BaseDaoInterface<Station, Integer> {
     @Override
-    public void add(Station station) {
+    public int add(Station station) {
+        int result = 0;
         Session session = null;
         try {
             session = HibernateUtils.getSessionFactory().openSession();
             session.beginTransaction();
-            session.save(station);
+            result = (Integer)session.save(station);
             session.getTransaction().commit();
         } catch (Exception e) {
             if (session != null) {
@@ -28,6 +29,7 @@ public class StationDaoImpl implements BaseDaoInterface<Station, Integer> {
             if (session != null){
                 session.close();
             }
+            return result;
         }
     }
 

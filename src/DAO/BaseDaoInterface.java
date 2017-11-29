@@ -1,12 +1,10 @@
 package DAO;
 
-import model.Train;
-
 import java.util.List;
 
 public interface BaseDaoInterface<T, Id> {
 
-    public void add(T entity);
+    public int add(T entity);
 
     public void update(T entity);
 

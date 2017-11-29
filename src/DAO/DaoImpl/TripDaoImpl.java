@@ -11,12 +11,13 @@ import java.util.List;
 
 public class TripDaoImpl implements BaseDaoInterface<Trip, Integer> {
     @Override
-    public void add(Trip trip) {
+    public int add(Trip trip) {
+        int result = 0;
         Session session = null;
         try {
             session = HibernateUtils.getSessionFactory().openSession();
             session.beginTransaction();
-            session.save(trip);
+            result = (Integer) session.save(trip);
             session.getTransaction().commit();
         } catch (Exception e) {
             if (session != null) {
@@ -27,6 +28,7 @@ public class TripDaoImpl implements BaseDaoInterface<Trip, Integer> {
             if (session != null){
                 session.close();
             }
+            return result;
         }
     }
 
