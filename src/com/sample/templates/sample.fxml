@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<TabPane prefHeight="495.0" prefWidth="922.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.Controller.Controller">
+  <tabs>
+    <Tab closable="false" text="Trains">
+      <content>
+        <SplitPane dividerPositions="0.7839195979899497" orientation="VERTICAL">
+          <items>
+            <fx:include source="trips.fxml" />
+
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="89.0" prefWidth="598.0">
+              <children>
+
+              </children>
+            </AnchorPane>
+          </items>
+        </SplitPane>
+      </content>
+    </Tab>
+    <Tab closable="false" text="Edit">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+          <children>
+            <TabPane layoutX="22.0" layoutY="46.0" prefHeight="400.0" prefWidth="770.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <tabs>
+                <Tab text="Trains">
+                  <content>
+                    <fx:include source="trains.fxml" />
+                  </content>
+                </Tab>
+                <Tab text="Cars">
+                  <content>
+                    <fx:include source="cars.fxml" />
+                  </content>
+                </Tab>
+                <Tab text="Stations">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  </content>
+                </Tab>
+                <Tab text="Car types">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+          </children>
+        </AnchorPane>
+      </content>
+    </Tab>
+  </tabs>
+</TabPane>

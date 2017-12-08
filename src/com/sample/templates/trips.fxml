@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<SplitPane dividerPositions="0.6713973799126638" prefHeight="424.0" prefWidth="918.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.Controller.TripsTableController">
+  <items>
+    <AnchorPane prefHeight="310.0" prefWidth="589.0" xmlns="http://javafx.com/javafx/8.0.141">
+      <children>
+        <TableView fx:id="tripTable" prefHeight="310.0" prefWidth="580.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+          <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+          </columnResizePolicy>
+          <columns>
+            <TableColumn fx:id="numberColumn" prefWidth="79.0" text="Number" />
+            <TableColumn prefWidth="228.0" text="Departure">
+              <columns>
+                <TableColumn fx:id="departureTimeColumn" prefWidth="30.0" text="Date" />
+                <TableColumn fx:id="departureStationColumn" prefWidth="137.0" text="Station" />
+              </columns>
+            </TableColumn>
+            <TableColumn prefWidth="163.0" text="Destination">
+              <columns>
+                <TableColumn fx:id="destinationTimeColumn" prefWidth="54.0" text="Date" />
+                <TableColumn fx:id="destinationStationColumn" prefWidth="141.0" text="Station" />
+              </columns>
+            </TableColumn>
+          </columns>
+        </TableView>
+      </children>
+    </AnchorPane>
+    <AnchorPane prefHeight="310.0" prefWidth="271.0">
+      <children>
+        <TableView fx:id="stoppingTable" layoutX="14.0" layoutY="24.0" prefHeight="422.0" prefWidth="260.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+          <columns>
+            <TableColumn prefWidth="329.0" text="Stations">
+              <columns>
+                <TableColumn fx:id="stopTimeColumn" prefWidth="51.0" text="Stop" />
+                <TableColumn fx:id="stationColumn" prefWidth="181.0" text="Name" />
+                <TableColumn fx:id="startTimeColumn" prefWidth="64.0" text="Start" />
+              </columns>
+            </TableColumn>
+          </columns>
+        </TableView>
+      </children>
+    </AnchorPane>
+
+  </items>
+</SplitPane>
