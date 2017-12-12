@@ -1,28 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<TabPane prefHeight="495.0" prefWidth="922.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.Controller.Controller">
+<TabPane fx:id="tabs" prefHeight="495.0" prefWidth="922.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.controller.Controller">
   <tabs>
-    <Tab closable="false" text="Trains">
+    <Tab fx:id="tripTab" closable="false" text="Trains">
       <content>
-        <SplitPane dividerPositions="0.7839195979899497" orientation="VERTICAL">
-          <items>
-            <fx:include source="trips.fxml" />
-
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="89.0" prefWidth="598.0">
-              <children>
-
-              </children>
-            </AnchorPane>
-          </items>
-        </SplitPane>
+        <fx:include source="trips.fxml" />
       </content>
     </Tab>
-    <Tab closable="false" text="Edit">
+    <Tab fx:id="editTab" closable="false" text="Edit">
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
           <children>
@@ -36,16 +25,6 @@
                 <Tab text="Cars">
                   <content>
                     <fx:include source="cars.fxml" />
-                  </content>
-                </Tab>
-                <Tab text="Stations">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                  </content>
-                </Tab>
-                <Tab text="Car types">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                   </content>
                 </Tab>
               </tabs>

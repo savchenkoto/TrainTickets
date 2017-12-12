@@ -1,11 +1,9 @@
-package com.Controller;
+package com.controller;
 
-import com.DAO.DaoImpl.CarDaoImpl;
-import com.DAO.DaoImpl.TrainDaoImpl;
-import com.DAO.DaoImpl.TypeDaoImpl;
-import com.model.Car;
-import com.model.Train;
-import com.model.Type;
+import com.dao.daoImpl.GenericDaoImpl;
+import com.domain.Car;
+import com.domain.Train;
+import com.domain.Type;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -58,12 +56,12 @@ public class CarController {
     }
 
     private void initData() {
-        CarDaoImpl carDao = new CarDaoImpl();
-        TrainDaoImpl trainDao = new TrainDaoImpl();
-        TypeDaoImpl typeDao = new TypeDaoImpl();
-        carList.setAll(carDao.findAll());
-        trainComboBoxList.setAll(trainDao.findAll());
-        typeComboBoxList.setAll(typeDao.findAll());
+        GenericDaoImpl<Car, Integer> carDao = new GenericDaoImpl<Car, Integer>(Car.class);
+        GenericDaoImpl<Train, Integer> trainDao = new GenericDaoImpl<Train, Integer>(Train.class);
+        GenericDaoImpl<Type, Integer> typeDao = new GenericDaoImpl<Type, Integer>(Type.class);
+        carList.setAll(carDao.list());
+        trainComboBoxList.setAll(trainDao.list());
+        typeComboBoxList.setAll(typeDao.list());
         setRowFactory();
         makeNumeric(numberField);
 
@@ -122,8 +120,8 @@ public class CarController {
                     Integer.parseInt(numberField.getText()),
                     (Type)typeComboBox.getSelectionModel().getSelectedItem()
             );
-            CarDaoImpl carDao = new CarDaoImpl();
-            car.setId(carDao.add(car));
+            GenericDaoImpl<Car, Integer> carDao = new GenericDaoImpl<Car, Integer>(Car.class);
+            car.setId(carDao.save(car));
             carList.add(car);
 
             trainComboBox.getSelectionModel().clearSelection();
@@ -132,6 +130,7 @@ public class CarController {
         }
     }
 
+    @FXML
     public void deleteButton(ActionEvent actionEvent) {
 
         Car car = carTable.getSelectionModel().getSelectedItem();
@@ -142,8 +141,8 @@ public class CarController {
             alert.setContentText("Do you really want to delete it?");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK){
-                CarDaoImpl carDao = new CarDaoImpl();
-                carDao.deleteById(car.getId());
+                GenericDaoImpl<Car, Integer> carDao = new GenericDaoImpl<Car, Integer>(Car.class);
+                carDao.delete(car);
                 carList.remove(car);
             } else {
                 alert.close();
@@ -158,10 +157,11 @@ public class CarController {
         }
     }
 
+    @FXML
     public void updateButton(ActionEvent actionEvent) {
 
         try {
-            CarDaoImpl carDao = new CarDaoImpl();
+            GenericDaoImpl<Car, Integer> carDao = new GenericDaoImpl<Car, Integer>(Car.class);
             selectedCar.setNumber(Integer.parseInt(numberField.getText()));
             selectedCar.setTrainByTrainId(trainComboBox.getValue());
             selectedCar.setTypeByTypeId(typeComboBox.getValue());

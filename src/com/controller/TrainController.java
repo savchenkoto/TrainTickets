@@ -1,7 +1,7 @@
-package com.Controller;
+package com.controller;
 
-import com.DAO.DaoImpl.TrainDaoImpl;
-import com.model.Train;
+import com.dao.daoImpl.GenericDaoImpl;
+import com.domain.Train;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -50,8 +50,8 @@ public class TrainController {
     }
 
     private void initData() {
-        TrainDaoImpl trainDao = new TrainDaoImpl();
-        trainList.addAll(trainDao.findAll());
+        GenericDaoImpl<Train, Integer> trainDao = new GenericDaoImpl<Train, Integer>(Train.class);
+        trainList.addAll(trainDao.list());
         setRowFactory();
     }
 
@@ -98,8 +98,8 @@ public class TrainController {
                     departureField.getText(),
                     destinationField.getText()
             );
-            TrainDaoImpl trainDao = new TrainDaoImpl();
-            train.setId(trainDao.add(train));
+            GenericDaoImpl<Train, Integer> trainDao = new GenericDaoImpl<Train, Integer>(Train.class);
+            train.setId(trainDao.save(train));
             trainList.add(train);
 
             numberField.setText("");
@@ -121,8 +121,8 @@ public class TrainController {
             alert.setContentText("Do you really want to delete it?");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK){
-                TrainDaoImpl trainDao = new TrainDaoImpl();
-                trainDao.deleteById(train.getId());
+                GenericDaoImpl<Train, Integer> trainDao = new GenericDaoImpl<Train, Integer>(Train.class);
+                trainDao.delete(train);
                 trainList.remove(train);
             } else {
                 alert.close();
@@ -141,7 +141,7 @@ public class TrainController {
     @FXML
     public void updateTrain(ActionEvent actionEvent) {
         try {
-            TrainDaoImpl trainDao = new TrainDaoImpl();
+            GenericDaoImpl<Train, Integer> trainDao = new GenericDaoImpl<Train, Integer>(Train.class);
             selectedTrain.setNumber(numberField.getText());
             selectedTrain.setDeparture(departureField.getText());
             selectedTrain.setDestination(destinationField.getText());

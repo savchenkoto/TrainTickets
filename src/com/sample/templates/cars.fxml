@@ -11,7 +11,7 @@
 
 <SplitPane dividerPositions="0.8038147138964578" orientation="VERTICAL" prefHeight="424.0" prefWidth="778.0"
            xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.141"
-           fx:controller="com.Controller.CarController">
+           fx:controller="com.controller.CarController">
   <items>
     <StackPane prefHeight="150.0" prefWidth="200.0">
       <children>

@@ -1,4 +1,4 @@
-package com.model;
+package com.domain;
 
 import javax.persistence.*;
 
@@ -8,6 +8,17 @@ public class Ticket {
     private Integer id;
     private Trip tripByTripId;
     private Seat seatBySeatId;
+
+    public Ticket(Trip tripByTripId, Seat seatBySeatId, Person personByPersonId) {
+        this.tripByTripId = tripByTripId;
+        this.seatBySeatId = seatBySeatId;
+        this.personByPersonId = personByPersonId;
+    }
+
+    public Ticket() {
+
+    }
+
     private Person personByPersonId;
 
     @Id
@@ -66,5 +77,11 @@ public class Ticket {
 
     public void setPersonByPersonId(Person personByPersonId) {
         this.personByPersonId = personByPersonId;
+    }
+
+    public void update(Ticket updatedTicket) {
+        this.setPersonByPersonId(updatedTicket.getPersonByPersonId());
+        this.setTripByTripId(updatedTicket.getTripByTripId());
+        this.setSeatBySeatId(updatedTicket.getSeatBySeatId());
     }
 }

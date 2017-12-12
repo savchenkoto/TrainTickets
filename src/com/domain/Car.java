@@ -1,4 +1,4 @@
-package com.model;
+package com.domain;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -109,4 +109,8 @@ public class Car {
         return new SimpleStringProperty(typeByTypeId.getName());
     }
 
+    @Transient
+    public StringProperty typeByTypedProperty() {
+        return new SimpleStringProperty(typeByTypeId.getName());
+    }
 }

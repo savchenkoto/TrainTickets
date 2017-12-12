@@ -10,7 +10,7 @@
 
 <SplitPane dividerPositions="0.8438356164383561" orientation="VERTICAL" prefHeight="367.0" prefWidth="722.0"
            xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="com.Controller.TrainController">
+           fx:controller="com.controller.TrainController">
   <items>
     <StackPane prefHeight="258.0" prefWidth="536.0">
       <children>

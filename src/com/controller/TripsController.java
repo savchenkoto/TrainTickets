@@ -1,20 +1,29 @@
-package com.Controller;
+package com.controller;
 
-import com.DAO.DaoImpl.TripDaoImpl;
-import com.model.TrainTrip;
-import com.model.TrainTripStopping;
-import com.model.Trip;
+import com.dao.daoImpl.GenericDaoImpl;
+import com.domain.TrainTrip;
+import com.domain.TrainTripStopping;
+import com.domain.Trip;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
+import java.io.IOException;
 import java.util.List;
 
-public class TripsTableController {
+public class TripsController {
 
 
     // stations
@@ -56,6 +65,7 @@ public class TripsTableController {
 
     @FXML
     private void initialize() {
+
         initData();
 
         numberColumn.setCellValueFactory(new PropertyValueFactory<TrainTrip, String>("train"));
@@ -78,8 +88,8 @@ public class TripsTableController {
 
     private void initData() {
         setRowFactory();
-        TripDaoImpl tripDao = new TripDaoImpl();
-        List<Trip> trips = tripDao.findAll();
+        GenericDaoImpl<Trip, Integer> tripDao = new GenericDaoImpl<Trip, Integer>(Trip.class);
+        List<Trip> trips = tripDao.list();
         tripList.clear();
         for (Trip trip : trips) {
             tripList.add(new TrainTrip(trip));
@@ -90,13 +100,43 @@ public class TripsTableController {
         tripTable.setRowFactory( tv -> {
             TableRow<TrainTrip> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                if (event.getClickCount() == 1 && (!row.isEmpty())) {
                     selectedTrainTrip = row.getItem();
                     stoppingsList.setAll(selectedTrainTrip.getStoppings());
                 }
             });
             return row;
         });
+    }
+
+    @FXML
+    private void buyButton(ActionEvent actionEvent) {
+        if (selectedTrainTrip != null) {
+            showBuyingDialog();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setHeaderText(null);
+            alert.setContentText("You have not selected anything.");
+            alert.showAndWait();
+        }
+
+    }
+
+    private void showBuyingDialog() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sample/templates/buying.fxml"));
+            Parent root = (Parent)loader.load();
+            BuyingController controller = loader.<BuyingController>getController();
+            controller.initData(this.selectedTrainTrip);
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initStyle(StageStyle.DECORATED);
+            stage.setTitle("Buying");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

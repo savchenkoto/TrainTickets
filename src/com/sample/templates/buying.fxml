@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<SplitPane dividerPositions="0.6754176610978521" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="394.0" prefWidth="257.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.controller.BuyingController">
+  <items>
+    <SplitPane dividerPositions="0.6392156862745098">
+      <items>
+        <AnchorPane prefHeight="324.0" prefWidth="101.0">
+          <children>
+            <TableView fx:id="carTable" layoutX="23.0" layoutY="29.0" prefHeight="324.0" prefWidth="114.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <columns>
+                <TableColumn fx:id="carNumberColumn" prefWidth="76.0" text="Car" />
+                <TableColumn fx:id="carTypeColumn" prefWidth="82.0" text="Type" />
+              </columns>
+            </TableView>
+          </children>
+        </AnchorPane>
+        <AnchorPane prefHeight="324.0" prefWidth="413.0">
+          <children>
+            <TableView fx:id="seatTable" layoutX="60.0" layoutY="125.0" prefHeight="195.0" prefWidth="92.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <columns>
+                <TableColumn fx:id="seatColumn" prefWidth="87.0" text="Seat" />
+              </columns>
+            </TableView>
+          </children>
+        </AnchorPane>
+      </items>
+    </SplitPane>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="433.0">
+      <children>
+        <Button layoutX="11.0" layoutY="82.0" mnemonicParsing="false" onAction="#buyButton" prefHeight="26.0" prefWidth="233.0" text="Buy" />
+        <TextField fx:id="nameField" alignment="CENTER" layoutX="11.0" layoutY="14.0" prefHeight="26.0" prefWidth="233.0" promptText="Your name" />
+        <TextField fx:id="passIdField" alignment="CENTER" layoutX="11.0" layoutY="48.0" prefHeight="26.0" prefWidth="233.0" promptText="Passport id" />
+      </children>
+    </AnchorPane>
+  </items>
+</SplitPane>

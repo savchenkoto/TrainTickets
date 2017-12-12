@@ -1,4 +1,4 @@
-package com.model;
+package com.domain;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -56,7 +56,7 @@ public class Trip {
         return result;
     }
 
-    @OneToMany(mappedBy = "tripByTripId")
+    @OneToMany(mappedBy = "tripByTripId", cascade = CascadeType.ALL)
     public Collection<Ticket> getTicketsById() {
         return ticketsById;
     }

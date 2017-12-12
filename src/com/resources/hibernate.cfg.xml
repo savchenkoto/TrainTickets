@@ -17,16 +17,16 @@
 
     <property name="hibernate.connection.CharSet">utf8</property>
 
-    <mapping class="com.model.Car"/>
-    <mapping class="com.model.Person"/>
-    <mapping class="com.model.Seat"/>
-    <mapping class="com.model.Station"/>
-    <mapping class="com.model.Stopping"/>
-    <mapping class="com.model.Ticket"/>
-    <mapping class="com.model.Train"/>
-    <mapping class="com.model.Trip"/>
-    <mapping class="com.model.Type"/>
-    <mapping class="com.model.Train"/>
+    <mapping class="com.domain.Car"/>
+    <mapping class="com.domain.Person"/>
+    <mapping class="com.domain.Seat"/>
+    <mapping class="com.domain.Station"/>
+    <mapping class="com.domain.Stopping"/>
+    <mapping class="com.domain.Ticket"/>
+    <mapping class="com.domain.Train"/>
+    <mapping class="com.domain.Trip"/>
+    <mapping class="com.domain.Type"/>
+    <mapping class="com.domain.Train"/>
     <!-- DB schema will be updated if needed -->
   </session-factory>
 </hibernate-configuration>

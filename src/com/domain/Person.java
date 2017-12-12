@@ -1,7 +1,8 @@
-package com.model;
+package com.domain;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "people", schema = "ticketsdb")
@@ -10,6 +11,15 @@ public class Person {
     private String name;
     private Integer passId;
     private Collection<Ticket> ticketsById;
+
+    public Person(String name, Integer passId) {
+        this.name = name;
+        this.passId = passId;
+    }
+
+    public Person() {
+
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,12 +74,18 @@ public class Person {
         return result;
     }
 
-    @OneToMany(mappedBy = "personByPersonId")
+    @OneToMany(mappedBy = "personByPersonId", cascade = CascadeType.ALL)
     public Collection<Ticket> getTicketsById() {
         return ticketsById;
     }
 
     public void setTicketsById(Collection<Ticket> ticketsById) {
         this.ticketsById = ticketsById;
+    }
+
+    public boolean hasTicketsOnTheTrip(Trip trip) {
+
+        List<Ticket> tickets = (List<Ticket>) this.getTicketsById();
+        return tickets.stream().filter(o -> o.getTripByTripId().equals(trip)).findFirst().isPresent();
     }
 }

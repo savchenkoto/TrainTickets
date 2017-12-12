@@ -1,4 +1,4 @@
-package com.model;
+package com.domain;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;

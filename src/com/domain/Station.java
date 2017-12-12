@@ -1,4 +1,4 @@
-package com.model;
+package com.domain;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -51,7 +51,7 @@ public class Station {
         return result;
     }
 
-    @OneToMany(mappedBy = "stationByStationId")
+    @OneToMany(mappedBy = "stationByStationId", cascade = CascadeType.ALL)
     public Collection<Stopping> getStoppingsById() {
         return stoppingsById;
     }

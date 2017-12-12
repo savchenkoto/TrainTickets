@@ -1,4 +1,4 @@
-package com.model;
+package com.domain;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -8,7 +8,7 @@ import java.util.Collection;
 public class Seat {
     private Integer id;
     private Integer seat;
-    private Byte isBorrowed;
+    private Byte isEngaged;
     private Car carByCarId;
     private Collection<Ticket> ticketsById;
 
@@ -34,13 +34,13 @@ public class Seat {
     }
 
     @Basic
-    @Column(name = "is_borrowed", nullable = false)
-    public Byte getIsBorrowed() {
-        return isBorrowed;
+    @Column(name = "is_engaged", nullable = false)
+    public Byte getIsEngaged() {
+        return isEngaged;
     }
 
-    public void setIsBorrowed(Byte isBorrowed) {
-        this.isBorrowed = isBorrowed;
+    public void setIsEngaged(Byte isBorrowed) {
+        this.isEngaged = isBorrowed;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class Seat {
 
         if (id != null ? !id.equals(seat1.id) : seat1.id != null) return false;
         if (seat != null ? !seat.equals(seat1.seat) : seat1.seat != null) return false;
-        if (isBorrowed != null ? !isBorrowed.equals(seat1.isBorrowed) : seat1.isBorrowed != null) return false;
+        if (isEngaged != null ? !isEngaged.equals(seat1.isEngaged) : seat1.isEngaged != null) return false;
 
         return true;
     }
@@ -61,7 +61,7 @@ public class Seat {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (seat != null ? seat.hashCode() : 0);
-        result = 31 * result + (isBorrowed != null ? isBorrowed.hashCode() : 0);
+        result = 31 * result + (isEngaged != null ? isEngaged.hashCode() : 0);
         return result;
     }
 
@@ -82,5 +82,10 @@ public class Seat {
 
     public void setTicketsById(Collection<Ticket> ticketsById) {
         this.ticketsById = ticketsById;
+    }
+
+    public void update(Seat updatedSeat) {
+        this.setSeat(updatedSeat.getSeat());
+        this.setIsEngaged(updatedSeat.getIsEngaged());
     }
 }

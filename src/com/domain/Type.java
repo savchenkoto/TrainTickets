@@ -1,4 +1,4 @@
-package com.model;
+package com.domain;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -60,12 +60,12 @@ public class Type {
         this.carsById = carsById;
     }
 
+    public void update(Type updatedType) {
+        this.setName(updatedType.getName());
+    }
+
     @Override
     public String toString() {
         return name;
-    }
-
-    public void update(Type updatedType) {
-        this.setName(updatedType.getName());
     }
 }

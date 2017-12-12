@@ -1,4 +1,4 @@
-package com.model;
+package com.domain;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -9,7 +9,7 @@ import java.util.*;
 
 public class TrainTrip {
 
-
+    private Trip trip;
     private Train train;
     private Calendar departureDate;
     private String departureTime;
@@ -20,28 +20,21 @@ public class TrainTrip {
 
 
     public TrainTrip(Trip trip) {
-        // get the train number
+        this.trip = trip;
         this.setTrain(trip.getTrainByTrainId());
-        // get and sort stoppings by time
-
         List<Stopping> stoppings = (List<Stopping>) this.getTrain().getStoppingsById();
         Collections.sort(stoppings);
-        // get and format dates
         this.setDepartureDate(toCalendar(trip.getDate()));
         this.setDepartureTime(
                 new SimpleDateFormat("MMM dd 'at' HH:mm")
                         .format(fromDeparture(stoppings.get(0).getStartTime()).getTime()));
-
         this.setDepartureStation(stoppings.get(0).getStationByStationId().getName());
-
         this.setDestinationTime(
                 new SimpleDateFormat("MMM dd 'at' HH:mm")
                         .format(fromDeparture(stoppings.get(stoppings.size() - 1).getStartTime())
                                 .getTime()));
-
         this.setDestinationStation
                 (stoppings.get(stoppings.size() - 1).getStationByStationId().getName());
-
 
         this.updateStoppings(stoppings);
     }
@@ -49,6 +42,10 @@ public class TrainTrip {
 
     public Train getTrain() {
         return train;
+    }
+
+    public Trip getTrip() {
+        return trip;
     }
 
     public void setTrain(Train train) {
@@ -106,11 +103,29 @@ public class TrainTrip {
     private void updateStoppings(List<Stopping> stoppings) {
         this.stoppings = new ArrayList<TrainTripStopping>();
         for (Stopping stopping : stoppings) {
-            this.stoppings.add(new TrainTripStopping(
-                    stopping.getStationByStationId(),
-                    new SimpleDateFormat("HH:mm").format(fromDeparture(stopping.getStopTime()).getTime()),
-                    new SimpleDateFormat("HH:mm").format(fromDeparture(stopping.getStartTime()).getTime())
-            ));
+            if (!stopping.getStopTime().equals(stopping.getStartTime())) {
+                this.stoppings.add(new TrainTripStopping(
+                        stopping.getStationByStationId(),
+                        new SimpleDateFormat("HH:mm").format(fromDeparture(stopping.getStopTime()).getTime()),
+                        new SimpleDateFormat("HH:mm").format(fromDeparture(stopping.getStartTime()).getTime())
+                ));
+            } else {
+                if (stopping.getStopTime() == 0) {
+                    this.stoppings.add(new TrainTripStopping(
+                            stopping.getStationByStationId(),
+                            new SimpleDateFormat("MMM dd").format(fromDeparture(stopping.getStopTime()).getTime()),
+                            new SimpleDateFormat("HH:mm").format(fromDeparture(stopping.getStartTime()).getTime())
+                    ));
+                } else {
+                    this.stoppings.add(new TrainTripStopping(
+                            stopping.getStationByStationId(),
+                            new SimpleDateFormat("HH:mm").format(fromDeparture(stopping.getStopTime()).getTime()),
+                            new SimpleDateFormat("MMM dd").format(fromDeparture(stopping.getStartTime()).getTime())
+                    ));
+                }
+
+            }
+
         }
     }
 

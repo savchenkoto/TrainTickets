@@ -1,4 +1,4 @@
-package com.model;
+package com.domain;
 
 import javax.persistence.*;
 import java.util.Collection;
