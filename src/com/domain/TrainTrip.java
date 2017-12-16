@@ -19,6 +19,8 @@ public class TrainTrip {
     private List<TrainTripStopping> stoppings;
 
 
+    // Cмотреть сюда !!!!
+
     public TrainTrip(Trip trip) {
         this.trip = trip;
         this.setTrain(trip.getTrainByTrainId());
@@ -39,17 +41,20 @@ public class TrainTrip {
         this.updateStoppings(stoppings);
     }
 
-
     public Train getTrain() {
         return train;
+    }
+
+    public void setTrain(Train train) {
+        this.train = train;
     }
 
     public Trip getTrip() {
         return trip;
     }
 
-    public void setTrain(Train train) {
-        this.train = train;
+    public void setTrip(Trip trip) {
+        this.trip = trip;
     }
 
     public Calendar getDepartureDate() {
@@ -144,6 +149,18 @@ public class TrainTrip {
         Calendar cal = (Calendar) this.getDepartureDate().clone();
         cal.add(Calendar.MINUTE, minutes);
         return cal;
+    }
+
+    public HashSet<Type> listCarTypes() {
+        HashSet<Type> result = new HashSet<Type>();
+        List<Car> cars = (List<Car>) this.getTrip().getTrainByTrainId().getCarsById();
+        for (Car car : cars) {
+            if (!result.contains(car.getTypeByTypeId()) &&
+                    car.getSeatsById().stream().anyMatch(o -> o.getIsTaken() == 0))
+
+                result.add(car.getTypeByTypeId());
+        }
+        return result;
     }
 
 

@@ -1,9 +1,11 @@
 package com.controller;
 
+import com.dao.GenericDao;
 import com.dao.daoImpl.GenericDaoImpl;
 import com.domain.TrainTrip;
 import com.domain.TrainTripStopping;
 import com.domain.Trip;
+import com.domain.Type;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -11,22 +13,25 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TripsController {
 
-
-    // stations
     private ObservableList<TrainTripStopping> stoppingsList = FXCollections.observableArrayList();
 
     @FXML
@@ -78,6 +83,11 @@ public class TripsController {
         stationColumn.setCellValueFactory(new PropertyValueFactory<TrainTripStopping, String>("station"));
         startTimeColumn.setCellValueFactory(new PropertyValueFactory<TrainTripStopping, String>("startTime"));
 
+        GenericDaoImpl<Type, Integer> typeDao = new GenericDaoImpl<Type, Integer>(Type.class);
+        typeComboBoxList.setAll(typeDao.list());
+        typeComboBoxList.add(null);
+        typeComboBox.setItems(typeComboBoxList);
+
         stoppingTable.setItems(stoppingsList);
 
         tripTable.setItems(tripList);
@@ -89,10 +99,13 @@ public class TripsController {
     private void initData() {
         setRowFactory();
         GenericDaoImpl<Trip, Integer> tripDao = new GenericDaoImpl<Trip, Integer>(Trip.class);
-        List<Trip> trips = tripDao.list();
-        tripList.clear();
+        initTripList(tripDao.list());
+    }
+
+    private void initTripList(List<Trip> trips) {
+        this.tripList.clear();
         for (Trip trip : trips) {
-            tripList.add(new TrainTrip(trip));
+            this.tripList.add(new TrainTrip(trip));
         }
     }
 
@@ -139,4 +152,98 @@ public class TripsController {
         }
     }
 
+    // search control
+    private ObservableList<Type> typeComboBoxList = FXCollections.observableArrayList();
+
+    @FXML
+    private DatePicker datePicker;
+
+    @FXML
+    private TextField fromField;
+
+    @FXML
+    private TextField toField;
+
+    @FXML
+    public ComboBox<Type> typeComboBox;
+
+    @FXML
+    public Button searchButton;
+
+    public void find(ActionEvent actionEvent) {
+        tripList.setAll(query(
+                toCalendar(datePicker.getValue()),
+                typeComboBox.getValue(),
+                fromField.getText(),
+                toField.getText()
+        ));
+        disableSelection();
+    }
+
+    private void disableSelection(){
+        selectedTrainTrip = null;
+        stoppingsList.clear();
+    }
+
+    private List<TrainTrip> query(Calendar date, Type type, String departure, String destination) {
+
+        GenericDao<Trip, Integer> tripDao = new GenericDaoImpl<Trip, Integer>(Trip.class);
+        initTripList(tripDao.list());
+
+        List<TrainTrip> results = new ArrayList<TrainTrip>(tripList);
+        if (datePicker.getValue() != null) {
+            String queriedDate = new SimpleDateFormat("MMM dd").format(date.getTime());
+            results = tripList.stream()
+                    .filter(o -> new SimpleDateFormat("MMM dd")
+                            .format(toCalendar(o.getTrip().getDate()).getTime())
+                            .equals(queriedDate))
+                    .collect(Collectors.toList());
+        }
+        if (type != null) {
+            results = results.stream()
+                    .filter(o -> o.listCarTypes().contains(type))
+                    .collect(Collectors.toList());
+        }
+
+        results = results.stream()
+                .filter(o -> o.getStoppings().get(0).getStation().getName().contains(departure))
+                .collect(Collectors.toList());
+
+        results = results.stream().
+                filter(o -> o.getStoppings().stream()
+                        .anyMatch(q -> q.getStation().getName().contains(destination)))
+                .collect(Collectors.toList());
+
+        return results;
+    }
+
+    private Calendar toCalendar(LocalDate localDate) {
+        Calendar cal = null;
+        if (localDate != null) {
+            Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
+            Date date = Date.from(instant);
+            cal = Calendar.getInstance();
+            cal.setTime(date);
+        }
+        return cal;
+    }
+
+    private Calendar toCalendar(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return cal;
+    }
+
+    @FXML
+    public void reset(ActionEvent actionEvent) {
+
+        GenericDao<Trip, Integer> tripDao = new GenericDaoImpl<Trip, Integer>(Trip.class);
+        initTripList(tripDao.list());
+
+        datePicker.setValue(null);
+        typeComboBox.setValue(null);
+        fromField.clear();
+        toField.clear();
+
+    }
 }

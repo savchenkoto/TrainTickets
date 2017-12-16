@@ -1,14 +1,18 @@
 package com.domain;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Objects;
 
 @Entity
-@Table(name = "seats", schema = "ticketsdb")
+@Table(name = "seats", schema = "trainsdb")
 public class Seat {
     private Integer id;
     private Integer seat;
-    private Byte isEngaged;
+    private Byte isTaken;
     private Car carByCarId;
     private Collection<Ticket> ticketsById;
 
@@ -34,35 +38,29 @@ public class Seat {
     }
 
     @Basic
-    @Column(name = "is_engaged", nullable = false)
-    public Byte getIsEngaged() {
-        return isEngaged;
+    @Column(name = "is_taken", nullable = false)
+    public Byte getIsTaken() {
+        return isTaken;
     }
 
-    public void setIsEngaged(Byte isBorrowed) {
-        this.isEngaged = isBorrowed;
+    public void setIsTaken(Byte isTaken) {
+        this.isTaken = isTaken;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Seat seat1 = (Seat) o;
-
-        if (id != null ? !id.equals(seat1.id) : seat1.id != null) return false;
-        if (seat != null ? !seat.equals(seat1.seat) : seat1.seat != null) return false;
-        if (isEngaged != null ? !isEngaged.equals(seat1.isEngaged) : seat1.isEngaged != null) return false;
-
-        return true;
+        return Objects.equals(id, seat1.id) &&
+                Objects.equals(seat, seat1.seat) &&
+                Objects.equals(isTaken, seat1.isTaken);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (seat != null ? seat.hashCode() : 0);
-        result = 31 * result + (isEngaged != null ? isEngaged.hashCode() : 0);
-        return result;
+
+        return Objects.hash(id, seat, isTaken);
     }
 
     @ManyToOne
@@ -84,8 +82,12 @@ public class Seat {
         this.ticketsById = ticketsById;
     }
 
-    public void update(Seat updatedSeat) {
-        this.setSeat(updatedSeat.getSeat());
-        this.setIsEngaged(updatedSeat.getIsEngaged());
+    @Transient
+    public StringProperty isTakenProperty() {
+        SimpleStringProperty result = new SimpleStringProperty("");
+        if (getIsTaken() == 1) {
+            result.set("X");
+        }
+        return result;
     }
 }

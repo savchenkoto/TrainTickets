@@ -3,10 +3,11 @@ package com.domain;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
-@Table(name = "stoppings", schema = "ticketsdb")
-public class Stopping implements Comparable<Stopping> {
+@Table(name = "stoppings", schema = "trainsdb")
+public class Stopping  implements Comparable<Stopping> {
     private Integer id;
     private Integer stopTime;
     private Integer startTime;
@@ -48,22 +49,16 @@ public class Stopping implements Comparable<Stopping> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Stopping stopping = (Stopping) o;
-
-        if (id != null ? !id.equals(stopping.id) : stopping.id != null) return false;
-        if (stopTime != null ? !stopTime.equals(stopping.stopTime) : stopping.stopTime != null) return false;
-        if (startTime != null ? !startTime.equals(stopping.startTime) : stopping.startTime != null) return false;
-
-        return true;
+        return Objects.equals(id, stopping.id) &&
+                Objects.equals(stopTime, stopping.stopTime) &&
+                Objects.equals(startTime, stopping.startTime);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (stopTime != null ? stopTime.hashCode() : 0);
-        result = 31 * result + (startTime != null ? startTime.hashCode() : 0);
-        return result;
+
+        return Objects.hash(id, stopTime, startTime);
     }
 
     @ManyToOne
@@ -86,14 +81,8 @@ public class Stopping implements Comparable<Stopping> {
         this.stationByStationId = stationByStationId;
     }
 
-    public void update(Stopping updatedStopping) {
-        this.setStartTime(updatedStopping.getStartTime());
-        this.setStopTime(updatedStopping.getStopTime());
-        this.setStationByStationId(updatedStopping.getStationByStationId());
-    }
-
     @Override
-    public int compareTo(@NotNull Stopping stopping) {
+    public int compareTo(@NotNull com.domain.Stopping stopping) {
         return startTime.compareTo(stopping.getStartTime());
     }
 }

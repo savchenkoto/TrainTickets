@@ -4,27 +4,30 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<TabPane fx:id="tabs" prefHeight="495.0" prefWidth="922.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.controller.Controller">
+<TabPane fx:id="tabs" prefHeight="608.0" prefWidth="943.0" xmlns="http://javafx.com/javafx/8.0.141"
+         xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.controller.Controller">
   <tabs>
     <Tab fx:id="tripTab" closable="false" text="Trains">
       <content>
-        <fx:include source="trips.fxml" />
+        <fx:include source="trips.fxml"/>
       </content>
     </Tab>
     <Tab fx:id="editTab" closable="false" text="Edit">
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
           <children>
-            <TabPane layoutX="22.0" layoutY="46.0" prefHeight="400.0" prefWidth="770.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <TabPane layoutX="22.0" layoutY="46.0" prefHeight="400.0" prefWidth="770.0" tabClosingPolicy="UNAVAILABLE"
+                     AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                     AnchorPane.topAnchor="0.0">
               <tabs>
                 <Tab text="Trains">
                   <content>
-                    <fx:include source="trains.fxml" />
+                    <fx:include source="trains.fxml"/>
                   </content>
                 </Tab>
                 <Tab text="Cars">
                   <content>
-                    <fx:include source="cars.fxml" />
+                    <fx:include source="cars.fxml"/>
                   </content>
                 </Tab>
               </tabs>

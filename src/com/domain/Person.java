@@ -1,20 +1,27 @@
 package com.domain;
 
+import com.dao.daoImpl.GenericDaoImpl;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
-@Table(name = "people", schema = "ticketsdb")
+@Table(name = "people", schema = "trainsdb")
 public class Person {
     private Integer id;
     private String name;
     private Integer passId;
+    private Rights rightsByRightsId;
+    private Byte isLoggedIn;
     private Collection<Ticket> ticketsById;
 
-    public Person(String name, Integer passId) {
-        this.name = name;
-        this.passId = passId;
+    public Person(String name, int passId) {
+        this.setName(name);
+        this.setPassId(passId);
+        GenericDaoImpl<Rights, Integer> rightsDao = new GenericDaoImpl<Rights, Integer>(Rights.class);
+        this.setRightsByRightsId(rightsDao.get(1));
     }
 
     public Person() {
@@ -52,29 +59,43 @@ public class Person {
         this.passId = passId;
     }
 
+    @Basic
+    @Column(name = "is_logged_in", nullable = false)
+    public Byte getIsLoggedIn() {
+        return isLoggedIn;
+    }
+
+    public void setIsLoggedIn(Byte isLoggedIn) {
+        this.isLoggedIn = isLoggedIn;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Person person = (Person) o;
-
-        if (id != null ? !id.equals(person.id) : person.id != null) return false;
-        if (name != null ? !name.equals(person.name) : person.name != null) return false;
-        if (passId != null ? !passId.equals(person.passId) : person.passId != null) return false;
-
-        return true;
+        return Objects.equals(id, person.id) &&
+                Objects.equals(name, person.name) &&
+                Objects.equals(passId, person.passId);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (passId != null ? passId.hashCode() : 0);
-        return result;
+
+        return Objects.hash(id, name, passId);
     }
 
-    @OneToMany(mappedBy = "personByPersonId", cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "rights_id", referencedColumnName = "id", nullable = false)
+    public Rights getRightsByRightsId() {
+        return rightsByRightsId;
+    }
+
+    public void setRightsByRightsId(Rights rightsByRightsId) {
+        this.rightsByRightsId = rightsByRightsId;
+    }
+
+    @OneToMany(mappedBy = "personByPersonId")
     public Collection<Ticket> getTicketsById() {
         return ticketsById;
     }
@@ -86,6 +107,9 @@ public class Person {
     public boolean hasTicketsOnTheTrip(Trip trip) {
 
         List<Ticket> tickets = (List<Ticket>) this.getTicketsById();
-        return tickets.stream().filter(o -> o.getTripByTripId().equals(trip)).findFirst().isPresent();
+        if (tickets != null) {
+            return tickets.stream().filter(o -> o.getTripByTripId().equals(trip)).findFirst().isPresent();
+        }
+        return false;
     }
 }

@@ -5,9 +5,10 @@ import javafx.beans.property.StringProperty;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Objects;
 
 @Entity
-@Table(name = "cars", schema = "ticketsdb")
+@Table(name = "cars", schema = "trainsdb")
 public class Car {
     private Integer id;
     private Integer number;
@@ -15,13 +16,15 @@ public class Car {
     private Type typeByTypeId;
     private Collection<Seat> seatsById;
 
-    public Car(Train trainByTrainId, Integer number, Type typeByTypeId) {
-        this.trainByTrainId = trainByTrainId;
-        this.number = number;
-        this.typeByTypeId = typeByTypeId;
+    public Car(Train train, int number, Type type) {
+        this.setTrainByTrainId(train);
+        this.setNumber(number);
+        this.setTypeByTypeId(type);
     }
 
-    public Car() { }
+    public Car() {
+
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,20 +51,15 @@ public class Car {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Car car = (Car) o;
-
-        if (id != null ? !id.equals(car.id) : car.id != null) return false;
-        if (number != null ? !number.equals(car.number) : car.number != null) return false;
-
-        return true;
+        return Objects.equals(id, car.id) &&
+                Objects.equals(number, car.number);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (number != null ? number.hashCode() : 0);
-        return result;
+
+        return Objects.hash(id, number);
     }
 
     @ManyToOne
@@ -84,19 +82,13 @@ public class Car {
         this.typeByTypeId = typeByTypeId;
     }
 
-    @OneToMany(mappedBy = "carByCarId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "carByCarId")
     public Collection<Seat> getSeatsById() {
         return seatsById;
     }
 
     public void setSeatsById(Collection<Seat> seatsById) {
         this.seatsById = seatsById;
-    }
-
-    public void update(Car updatedCar) {
-        this.setNumber(updatedCar.getNumber());
-        this.setTrainByTrainId(updatedCar.getTrainByTrainId());
-        this.setTypeByTypeId(updatedCar.getTypeByTypeId());
     }
 
     @Transient
@@ -113,4 +105,5 @@ public class Car {
     public StringProperty typeByTypedProperty() {
         return new SimpleStringProperty(typeByTypeId.getName());
     }
+
 }

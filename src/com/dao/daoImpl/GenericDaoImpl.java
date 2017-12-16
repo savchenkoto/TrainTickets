@@ -59,8 +59,8 @@ public class GenericDaoImpl<T, PK extends Serializable> implements GenericDao<T,
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<T> criteria = builder.createQuery(type);
 
-        Root<T> contactRoot = criteria.from(type);
-        criteria.select(contactRoot);
+        Root<T> root = criteria.from(type);
+        criteria.select(root);
 
         List<T> objects = session.createQuery(criteria).getResultList();
         session.close();

@@ -16,14 +16,14 @@ public class SeatDaoImpl extends GenericDaoImpl<Seat, Integer> {
         super(type);
     }
 
-    public List<Seat> getUnengagedSeatsOfCar(Car car) {
+    public List<Seat> listUnengagedSeatsOfCar(Car car) {
         Session session = HibernateUtils.getSessionFactory().openSession();
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<Seat> criteria = builder.createQuery(Seat.class);
 
         Root<Seat> root = criteria.from(Seat.class);
         criteria.where(builder.and(
-                builder.equal(root.get("isEngaged"), 0),
+                builder.equal(root.get("isTaken"), 0),
                 builder.equal(root.get("carByCarId"), car)
         ));
 

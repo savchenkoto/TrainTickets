@@ -30,6 +30,4 @@ public class Controller extends AnchorPane {
 
 
 
-
-
 }

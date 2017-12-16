@@ -1,8 +1,9 @@
 package com.controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.TextField;
 
-import java.awt.*;
 
 public class LoginController {
 
@@ -10,11 +11,16 @@ public class LoginController {
     private TextField username;
 
     @FXML
-    private TextField password;
+    private TextField passId;
 
+    @FXML
+    public void login(ActionEvent actionEvent) {
 
+    }
 
+    @FXML
+    public void register(ActionEvent actionEvent) {
 
-
+    }
 }
 

@@ -1,25 +1,25 @@
 package com.domain;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
-@Table(name = "tickets", schema = "ticketsdb")
+@Table(name = "tickets", schema = "trainsdb")
 public class Ticket {
     private Integer id;
     private Trip tripByTripId;
     private Seat seatBySeatId;
+    private Person personByPersonId;
 
-    public Ticket(Trip tripByTripId, Seat seatBySeatId, Person personByPersonId) {
-        this.tripByTripId = tripByTripId;
-        this.seatBySeatId = seatBySeatId;
-        this.personByPersonId = personByPersonId;
+    public Ticket(Trip trip, Seat seat, Person person) {
+        this.setTripByTripId(trip);
+        this.setSeatBySeatId(seat);
+        this.setPersonByPersonId(person);
     }
 
     public Ticket() {
 
     }
-
-    private Person personByPersonId;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,17 +36,14 @@ public class Ticket {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Ticket ticket = (Ticket) o;
-
-        if (id != null ? !id.equals(ticket.id) : ticket.id != null) return false;
-
-        return true;
+        return Objects.equals(id, ticket.id);
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+
+        return Objects.hash(id);
     }
 
     @ManyToOne
@@ -77,11 +74,5 @@ public class Ticket {
 
     public void setPersonByPersonId(Person personByPersonId) {
         this.personByPersonId = personByPersonId;
-    }
-
-    public void update(Ticket updatedTicket) {
-        this.setPersonByPersonId(updatedTicket.getPersonByPersonId());
-        this.setTripByTripId(updatedTicket.getTripByTripId());
-        this.setSeatBySeatId(updatedTicket.getSeatBySeatId());
     }
 }

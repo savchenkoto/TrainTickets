@@ -2,9 +2,10 @@ package com.domain;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Objects;
 
 @Entity
-@Table(name = "trains", schema = "ticketsdb")
+@Table(name = "trains", schema = "trainsdb")
 public class Train {
     private Integer id;
     private String number;
@@ -15,12 +16,14 @@ public class Train {
     private Collection<Trip> tripsById;
 
     public Train(String number, String departure, String destination) {
-        this.number = number;
-        this.departure = departure;
-        this.destination = destination;
+        this.setNumber(number);
+        this.setDeparture(departure);
+        this.setDestination(destination);
     }
 
-    public Train() { }
+    public Train() {
+
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,28 +70,20 @@ public class Train {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Train train = (Train) o;
-
-        if (id != null ? !id.equals(train.id) : train.id != null) return false;
-        if (number != null ? !number.equals(train.number) : train.number != null) return false;
-        if (departure != null ? !departure.equals(train.departure) : train.departure != null) return false;
-        if (destination != null ? !destination.equals(train.destination) : train.destination != null) return false;
-
-        return true;
+        return Objects.equals(id, train.id) &&
+                Objects.equals(number, train.number) &&
+                Objects.equals(departure, train.departure) &&
+                Objects.equals(destination, train.destination);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (number != null ? number.hashCode() : 0);
-        result = 31 * result + (departure != null ? departure.hashCode() : 0);
-        result = 31 * result + (destination != null ? destination.hashCode() : 0);
-        return result;
+
+        return Objects.hash(id, number, departure, destination);
     }
 
-
-    @OneToMany(mappedBy = "trainByTrainId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "trainByTrainId")
     public Collection<Car> getCarsById() {
         return carsById;
     }
@@ -97,7 +92,7 @@ public class Train {
         this.carsById = carsById;
     }
 
-    @OneToMany(mappedBy = "trainByTrainId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "trainByTrainId")
     public Collection<Stopping> getStoppingsById() {
         return stoppingsById;
     }
@@ -106,7 +101,7 @@ public class Train {
         this.stoppingsById = stoppingsById;
     }
 
-    @OneToMany(mappedBy = "trainByTrainId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "trainByTrainId")
     public Collection<Trip> getTripsById() {
         return tripsById;
     }
@@ -115,15 +110,8 @@ public class Train {
         this.tripsById = tripsById;
     }
 
-    public void update(Train updatedTrain) {
-        this.setNumber(updatedTrain.getNumber());
-        this.setDeparture(updatedTrain.getDeparture());
-        this.setDestination(updatedTrain.getDestination());
-    }
-
     @Override
     public String toString() {
         return number;
     }
-
 }

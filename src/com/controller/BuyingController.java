@@ -2,7 +2,6 @@ package com.controller;
 
 import com.dao.daoImpl.GenericDaoImpl;
 import com.dao.daoImpl.PersonDaoImpl;
-import com.dao.daoImpl.SeatDaoImpl;
 import com.domain.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 public class BuyingController {
 
@@ -42,11 +42,15 @@ public class BuyingController {
     private TableColumn<Seat, Integer> seatColumn;
 
     @FXML
+    private TableColumn<Seat, String> isTakenColumn;
+
+    @FXML
     public void initialize() {
 
         carNumberColumn.setCellValueFactory(new PropertyValueFactory<Car, Integer>("number"));
         carTypeColumn.setCellValueFactory(new PropertyValueFactory<Car, Type>("typeByTypeId"));
         seatColumn.setCellValueFactory(new PropertyValueFactory<Seat, Integer>("seat"));
+        isTakenColumn.setCellValueFactory(new PropertyValueFactory<Seat, String>("isTaken"));
 
         carTable.setItems(carList);
         seatTable.setItems(seatList);
@@ -56,15 +60,16 @@ public class BuyingController {
     private void setCarsRowFactory() {
         carTable.setRowFactory(tv -> {
             TableRow<Car> row = new TableRow<>();
-            SeatDaoImpl seatDao = new SeatDaoImpl(Seat.class);
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 1 && (!row.isEmpty())) {
                     selectedCar = row.getItem();
-                    seatList.setAll(seatDao.getUnengagedSeatsOfCar(selectedCar));
+                    seatList.setAll(selectedCar.getSeatsById());
                 }
             });
             return row;
         });
+
+
 
     }
 
@@ -87,7 +92,7 @@ public class BuyingController {
                 (nameField.getText() == null || nameField.getText().trim().isEmpty()) ||
                         (passIdField.getText() == null || passIdField.getText().trim().isEmpty()) ||
                         (seatTable.getSelectionModel().getSelectedItem() == null) ||
-                        (seatTable.getSelectionModel().getSelectedItem().getIsEngaged() == 1)) {
+                        (seatTable.getSelectionModel().getSelectedItem().getIsTaken() == 1)) {
 
             Alert error = new Alert(Alert.AlertType.ERROR);
             error.setHeaderText(null);
@@ -118,7 +123,7 @@ public class BuyingController {
                                 personDao.get(person.getId())
                         )
                 );
-                selectedSeat.setIsEngaged((byte) 1);
+                selectedSeat.setIsTaken((byte) 1);
                 GenericDaoImpl<Seat, Integer> seatDao = new GenericDaoImpl<Seat, Integer>(Seat.class);
                 seatDao.update(selectedSeat);
                 seatTable.refresh();
@@ -129,6 +134,14 @@ public class BuyingController {
 
     }
 
+    @FXML
+    private Button cancelButton;
+
+    public void cancelButtonAction(ActionEvent actionEvent) {
+        Stage stage = (Stage) cancelButton.getScene().getWindow();
+        stage.close();
+    }
+
     private void makeNumeric(TextField textField) {
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
@@ -136,6 +149,5 @@ public class BuyingController {
             }
         });
     }
-
 
 }

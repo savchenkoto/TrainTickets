@@ -4,12 +4,12 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 
 @Entity
-@Table(name = "trips", schema = "ticketsdb")
+@Table(name = "trips", schema = "trainsdb")
 public class Trip {
+
     private Integer id;
     private Date date;
     private Collection<Ticket> ticketsById;
@@ -40,23 +40,18 @@ public class Trip {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Trip trip = (Trip) o;
-
-        if (id != null ? !id.equals(trip.id) : trip.id != null) return false;
-        if (date != null ? !date.equals(trip.date) : trip.date != null) return false;
-
-        return true;
+        return Objects.equals(id, trip.id) &&
+                Objects.equals(date, trip.date);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (date != null ? date.hashCode() : 0);
-        return result;
+
+        return Objects.hash(id, date);
     }
 
-    @OneToMany(mappedBy = "tripByTripId", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tripByTripId")
     public Collection<Ticket> getTicketsById() {
         return ticketsById;
     }
@@ -75,15 +70,11 @@ public class Trip {
         this.trainByTrainId = trainByTrainId;
     }
 
-    public void update(Trip updatedTrip) {
-        this.setDate(updatedTrip.getDate());
-        this.setTrainByTrainId(updatedTrip.getTrainByTrainId());
-    }
-
     @Transient
     public StringProperty trainByTrainIdProperty() {
         return new SimpleStringProperty(trainByTrainId.getNumber());
     }
 
-
 }
+
+
