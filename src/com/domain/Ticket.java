@@ -56,7 +56,7 @@ public class Ticket {
         this.tripByTripId = tripByTripId;
     }
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "seat_id", referencedColumnName = "id", nullable = false)
     public Seat getSeatBySeatId() {
         return seatBySeatId;
@@ -69,6 +69,7 @@ public class Ticket {
     @ManyToOne
     @JoinColumn(name = "person_id", referencedColumnName = "id", nullable = false)
     public Person getPersonByPersonId() {
+
         return personByPersonId;
     }
 

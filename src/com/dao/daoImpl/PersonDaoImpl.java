@@ -15,7 +15,7 @@ public class PersonDaoImpl extends GenericDaoImpl<Person, Integer> {
         super(type);
     }
 
-    public Person getByPassId(Integer passId) {
+    public Person getByPassId(String passId) {
         Session session = HibernateUtils.getSessionFactory().openSession();
         CriteriaBuilder builder = session.getCriteriaBuilder();
         CriteriaQuery<Person> criteria = builder.createQuery(Person.class);
@@ -35,7 +35,5 @@ public class PersonDaoImpl extends GenericDaoImpl<Person, Integer> {
         }
         return result;
     }
-
-
 
 }

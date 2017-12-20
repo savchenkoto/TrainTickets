@@ -6,12 +6,12 @@
         <datasource-map>
           <unit-entry name="com:resources:hibernate.cfg.xml" value="291d034e-45b3-4d5b-8c1b-6e004e928cdf" />
           <unit-entry name="hibernate.cfg.xml" value="e3ef7d65-0537-4dcb-9c60-985fc6a4c57f" />
-          <unit-entry name="resources:hibernate.cfg.xml" value="7423f1de-1ff4-4e00-afe5-e718a2ee028a" />
+          <unit-entry name="resources:hibernate.cfg.xml" value="291d034e-45b3-4d5b-8c1b-6e004e928cdf" />
         </datasource-map>
         <naming-strategy-map>
           <unit-entry name="resources:hibernate.cfg.xml" />
         </naming-strategy-map>
-        <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/src/com/resources/hibernate.cfg.xml" />
+        <deploymentDescriptor name="hibernate.cfg.xml" url="file://$MODULE_DIR$/src/resources/hibernate.cfg.xml" />
       </configuration>
     </facet>
   </component>

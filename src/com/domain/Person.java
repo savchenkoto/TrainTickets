@@ -12,12 +12,11 @@ import java.util.Objects;
 public class Person {
     private Integer id;
     private String name;
-    private Integer passId;
+    private String passId;
     private Rights rightsByRightsId;
-    private Byte isLoggedIn;
     private Collection<Ticket> ticketsById;
 
-    public Person(String name, int passId) {
+    public Person(String name, String passId) {
         this.setName(name);
         this.setPassId(passId);
         GenericDaoImpl<Rights, Integer> rightsDao = new GenericDaoImpl<Rights, Integer>(Rights.class);
@@ -51,22 +50,12 @@ public class Person {
 
     @Basic
     @Column(name = "pass_id", nullable = false)
-    public Integer getPassId() {
+    public String getPassId() {
         return passId;
     }
 
-    public void setPassId(Integer passId) {
+    public void setPassId(String passId) {
         this.passId = passId;
-    }
-
-    @Basic
-    @Column(name = "is_logged_in", nullable = false)
-    public Byte getIsLoggedIn() {
-        return isLoggedIn;
-    }
-
-    public void setIsLoggedIn(Byte isLoggedIn) {
-        this.isLoggedIn = isLoggedIn;
     }
 
     @Override

@@ -4,7 +4,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.Objects;
 
 @Entity
@@ -14,7 +13,7 @@ public class Seat {
     private Integer seat;
     private Byte isTaken;
     private Car carByCarId;
-    private Collection<Ticket> ticketsById;
+    private Ticket ticketsById;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,8 +58,8 @@ public class Seat {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(id, seat, isTaken);
+
     }
 
     @ManyToOne
@@ -73,12 +72,12 @@ public class Seat {
         this.carByCarId = carByCarId;
     }
 
-    @OneToMany(mappedBy = "seatBySeatId")
-    public Collection<Ticket> getTicketsById() {
+    @OneToOne(mappedBy = "seatBySeatId")
+    public Ticket getTicketById() {
         return ticketsById;
     }
 
-    public void setTicketsById(Collection<Ticket> ticketsById) {
+    public void setTicketById(Ticket ticketsById) {
         this.ticketsById = ticketsById;
     }
 
@@ -88,6 +87,29 @@ public class Seat {
         if (getIsTaken() == 1) {
             result.set("X");
         }
+        return result;
+    }
+
+    @Transient
+    public StringProperty carProperty() {
+        return new SimpleStringProperty(String.valueOf(carByCarId.getNumber()));
+    }
+
+    @Transient
+    public StringProperty typeProperty() {
+        return new SimpleStringProperty(carByCarId.getTypeByTypeId().getName());
+    }
+
+    @Transient
+    public SimpleStringProperty passIdProperty() {
+        SimpleStringProperty result = new SimpleStringProperty("");
+        Person person = null;
+        try {
+            person = ticketsById.getPersonByPersonId();
+        } catch (NullPointerException e) {
+            return result;
+        }
+        result.set(person.getPassId());
         return result;
     }
 }

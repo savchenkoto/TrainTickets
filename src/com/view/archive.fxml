@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+
+<SplitPane dividerPositions="0.6839872746553552" prefHeight="575.0" prefWidth="943.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.controller.ArchiveController">
+  <items>
+    <TableView fx:id="tripTable" prefHeight="575.0" prefWidth="570.0">
+      <columns>
+        <TableColumn fx:id="numberColumn" text="Номер" />
+        <TableColumn prefWidth="231.0" text="Отправление">
+          <columns>
+            <TableColumn fx:id="departureTimeColumn" prefWidth="126.0" text="Дата" />
+            <TableColumn fx:id="departureStationColumn" prefWidth="151.0" text="Станция" />
+          </columns>
+        </TableColumn>
+        <TableColumn prefWidth="340.0" text="Прибытие">
+          <columns>
+            <TableColumn fx:id="destinationTimeColumn" prefWidth="137.0" text="Дата" />
+            <TableColumn fx:id="destinationStationColumn" prefWidth="147.0" text="Станция" />
+          </columns>
+        </TableColumn>
+      </columns>
+    </TableView>
+    <TableView fx:id="passengersTable" prefHeight="200.0" prefWidth="200.0">
+      <columns>
+        <TableColumn prefWidth="75.0" text="Пассажиры">
+          <columns>
+            <TableColumn fx:id="carColumn" prefWidth="64.0" text="Вагон" />
+            <TableColumn fx:id="typeColumn" prefWidth="54.0" text="Тип" />
+            <TableColumn fx:id="seatColumn" prefWidth="63.0" text="Место" />
+            <TableColumn fx:id="passIdColumn" prefWidth="119.0" text="Пасспорт" />
+          </columns>
+        </TableColumn>
+      </columns>
+    </TableView>
+  </items>
+</SplitPane>

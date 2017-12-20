@@ -4,8 +4,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 import java.beans.Transient;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TrainTrip {
 
@@ -18,27 +20,25 @@ public class TrainTrip {
     private String destinationStation;
     private List<TrainTripStopping> stoppings;
 
-
-    // Cмотреть сюда !!!!
-
     public TrainTrip(Trip trip) {
         this.trip = trip;
         this.setTrain(trip.getTrainByTrainId());
         List<Stopping> stoppings = (List<Stopping>) this.getTrain().getStoppingsById();
         Collections.sort(stoppings);
         this.setDepartureDate(toCalendar(trip.getDate()));
-        this.setDepartureTime(
-                new SimpleDateFormat("MMM dd 'at' HH:mm")
-                        .format(fromDeparture(stoppings.get(0).getStartTime()).getTime()));
-        this.setDepartureStation(stoppings.get(0).getStationByStationId().getName());
-        this.setDestinationTime(
-                new SimpleDateFormat("MMM dd 'at' HH:mm")
-                        .format(fromDeparture(stoppings.get(stoppings.size() - 1).getStartTime())
-                                .getTime()));
-        this.setDestinationStation
-                (stoppings.get(stoppings.size() - 1).getStationByStationId().getName());
 
-        this.updateStoppings(stoppings);
+        if (!trip.getTrainByTrainId().getStoppingsById().isEmpty()) {
+            DateFormat dateFormat = new SimpleDateFormat("MMM dd 'at' HH:mm");
+            this.setDepartureTime(dateFormat.format(
+                    fromDeparture(stoppings.get(0).getStartTime()).getTime()));
+            this.setDepartureStation(stoppings.get(0).getStationByStationId().getName());
+            this.setDestinationTime(dateFormat.format(fromDeparture(stoppings.get(stoppings.size() - 1).getStartTime()).getTime()));
+            this.setDestinationStation
+                    (stoppings.get(stoppings.size() - 1).getStationByStationId().getName());
+
+            this.updateStoppings(stoppings);
+        }
+
     }
 
     public Train getTrain() {
@@ -163,7 +163,16 @@ public class TrainTrip {
         return result;
     }
 
+    public List<Seat> getSeats() {
 
+        List<Seat> results = new ArrayList<Seat>();
+        for (Car car : train.getCarsById()) {
+            results.addAll(car.getSeatsById());
+        }
+        return results.stream()
+                .sorted(Comparator.comparing(object -> object.getCarByCarId().getNumber()))
+                .collect(Collectors.toList());
+    }
 
 
 }

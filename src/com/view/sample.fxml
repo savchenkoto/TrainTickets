@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<TabPane fx:id="tabs" prefHeight="608.0" prefWidth="943.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.controller.MainController">
+  <tabs>
+    <Tab fx:id="tripTab" closable="false" text="Поезда">
+      <content>
+        <fx:include source="trips.fxml" />
+      </content>
+    </Tab>
+    <Tab fx:id="archiveTab" closable="false" text="Архив">
+      <content>
+        <fx:include source="archive.fxml" />
+      </content>
+    </Tab>
+    <Tab fx:id="editTab" closable="false" text="Редактирование">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+          <children>
+            <TabPane layoutX="22.0" layoutY="46.0" prefHeight="400.0" prefWidth="770.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <tabs>
+                <Tab text="Trains">
+                  <content>
+                    <fx:include source="edit_trains.fxml" />
+                  </content>
+                </Tab>
+                <Tab text="Cars">
+
+                </Tab>
+              </tabs>
+            </TabPane>
+          </children>
+        </AnchorPane>
+      </content>
+    </Tab>
+  </tabs>
+</TabPane>

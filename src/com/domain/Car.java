@@ -1,8 +1,5 @@
 package com.domain;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Objects;
@@ -91,19 +88,14 @@ public class Car {
         this.seatsById = seatsById;
     }
 
-    @Transient
-    public StringProperty trainByTrainIdProperty() {
-        return new SimpleStringProperty(trainByTrainId.getNumber());
-    }
-
-    @Transient
-    public StringProperty typeByTypeIdProperty() {
-        return new SimpleStringProperty(typeByTypeId.getName());
-    }
-
-    @Transient
-    public StringProperty typeByTypedProperty() {
-        return new SimpleStringProperty(typeByTypeId.getName());
-    }
+//    @Transient
+//    public StringProperty trainByTrainIdProperty() {
+//        return new SimpleStringProperty(trainByTrainId.getNumber());
+//    }
+//
+//    @Transient
+//    public StringProperty typeByTypeIdProperty() {
+//        return new SimpleStringProperty(typeByTypeId.getName());
+//    }
 
 }

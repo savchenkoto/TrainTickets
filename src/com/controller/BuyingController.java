@@ -9,13 +9,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 
 public class BuyingController {
 
     private Car selectedCar;
-
-    //private Seat selectedSeat;
 
     private Trip selectedTrip;
 
@@ -68,47 +65,27 @@ public class BuyingController {
             });
             return row;
         });
-
-
-
     }
 
     public void initData(TrainTrip selectedTrip) {
         this.selectedTrip = selectedTrip.getTrip();
         setCarsRowFactory();
-        makeNumeric(passIdField);
         GenericDaoImpl<Train, Integer> trainDao = new GenericDaoImpl<Train, Integer>(Train.class);
         carList.setAll(trainDao.get(this.selectedTrip.getTrainByTrainId().getId()).getCarsById());
     }
 
-    @FXML
-    private TextField nameField;
-
-    @FXML
-    private TextField passIdField;
-
     public void buyButton(ActionEvent actionEvent) {
         if (
-                (nameField.getText() == null || nameField.getText().trim().isEmpty()) ||
-                        (passIdField.getText() == null || passIdField.getText().trim().isEmpty()) ||
-                        (seatTable.getSelectionModel().getSelectedItem() == null) ||
-                        (seatTable.getSelectionModel().getSelectedItem().getIsTaken() == 1)) {
+                (seatTable.getSelectionModel().getSelectedItem() == null) ||
+                (seatTable.getSelectionModel().getSelectedItem().getIsTaken() == 1)) {
 
             Alert error = new Alert(Alert.AlertType.ERROR);
             error.setHeaderText(null);
-            error.setContentText("Please, select the train and fill out the form.");
+            error.setContentText("Please, select the car and unoccupied seat");
             error.showAndWait();
         } else {
             PersonDaoImpl personDao = new PersonDaoImpl(Person.class);
-            Person person = personDao.getByPassId(Integer.parseInt(passIdField.getText()));
-            if (person == null) {
-                person = new Person(
-                        nameField.getText(),
-                        Integer.parseInt(passIdField.getText())
-                );
-                person.setId(personDao.save(person));
-            }
-            if (person.hasTicketsOnTheTrip(selectedTrip)) {
+            if (User.getInstance().getCurrent().hasTicketsOnTheTrip(selectedTrip)) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setHeaderText(null);
                 alert.setContentText("You have already bought the ticket on this train.");
@@ -120,7 +97,7 @@ public class BuyingController {
                         new Ticket(
                                 selectedTrip,
                                 selectedSeat,
-                                personDao.get(person.getId())
+                                personDao.get(User.getInstance().getCurrent().getId())
                         )
                 );
                 selectedSeat.setIsTaken((byte) 1);
@@ -132,14 +109,6 @@ public class BuyingController {
         }
 
 
-    }
-
-    @FXML
-    private Button cancelButton;
-
-    public void cancelButtonAction(ActionEvent actionEvent) {
-        Stage stage = (Stage) cancelButton.getScene().getWindow();
-        stage.close();
     }
 
     private void makeNumeric(TextField textField) {

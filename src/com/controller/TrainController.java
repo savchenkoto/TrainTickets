@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
@@ -16,67 +17,77 @@ public class TrainController {
     private ObservableList<Train> trainList = FXCollections.observableArrayList();
 
     @FXML
-    private TableView<Train> trainTable;
+    protected TableView<Train> trainTable;
 
     @FXML
-    private TableColumn<Train, String> numberColumn;
+    protected TableColumn<Train, String> trainNumberColumn;
 
     @FXML
-    private TableColumn<Train, String> departureColumn;
+    protected TableColumn<Train, String> departureColumn;
 
     @FXML
-    private TableColumn<Train, String> destinationColumn;
+    protected TableColumn<Train, String> destinationColumn;
 
 
     @FXML
-    private TextField numberField;
+    protected TextField trainNumberField;
 
     @FXML
-    private TextField departureField;
+    protected TextField departureField;
 
     @FXML
-    private TextField destinationField;
+    protected TextField destinationField;
 
+    @FXML
+    public Parent carEditor;
+
+    @FXML
+    private CarController carEditorController;
 
     @FXML
     private void initialize() {
+
         initData();
 
-        numberColumn.setCellValueFactory(new PropertyValueFactory<Train, String>("number"));
+        trainNumberColumn.setCellValueFactory(new PropertyValueFactory<Train, String>("number"));
         departureColumn.setCellValueFactory(new PropertyValueFactory<Train, String>("departure"));
         destinationColumn.setCellValueFactory(new PropertyValueFactory<Train, String>("destination"));
 
         trainTable.setItems(trainList);
+
     }
 
     private void initData() {
         GenericDaoImpl<Train, Integer> trainDao = new GenericDaoImpl<Train, Integer>(Train.class);
         trainList.addAll(trainDao.list());
-        setRowFactory();
+        setTrainRowFactory();
     }
 
-    private void setRowFactory() {
-        trainTable.setRowFactory( tv -> {
+    private void setTrainRowFactory() {
+        trainTable.setRowFactory(tv -> {
             TableRow<Train> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
 
-                    numberField.setText(row.getItem().getNumber());
+                    trainNumberField.setText(row.getItem().getNumber());
                     departureField.setText(row.getItem().getDeparture());
                     destinationField.setText(row.getItem().getDestination());
                     selectedTrain = row.getItem();
-
                 } else {
-                    numberField.setText("");
+                    trainNumberField.setText("");
                     departureField.setText("");
                     destinationField.setText("");
-                    selectedTrain = null;
                 }
+                if (event.getClickCount() == 1 && (!row.isEmpty())) {
+                    selectedTrain = row.getItem();
+                    carEditorController.getCarList().setAll(selectedTrain.getCarsById());
 
+                }
             });
             return row;
         });
     }
+
 
     private Train selectedTrain;
 
@@ -84,28 +95,27 @@ public class TrainController {
     @FXML
     public void addTrain(ActionEvent actionEvent) {
 
-        if ((numberField.getText() == null || numberField.getText().trim().isEmpty()) ||
-                        (departureField.getText() == null || departureField.getText().trim().isEmpty()) ||
-                        (destinationField.getText() == null || destinationField.getText().trim().isEmpty())) {
+        if ((trainNumberField.getText() == null || trainNumberField.getText().trim().isEmpty()) ||
+                (departureField.getText() == null || departureField.getText().trim().isEmpty()) ||
+                (destinationField.getText() == null || destinationField.getText().trim().isEmpty())) {
             Alert error = new Alert(Alert.AlertType.ERROR);
-            error.setHeaderText("The data haven't added");
-            error.setContentText("All fields must be filled out");
+            error.setHeaderText("Данные не добавлены");
+            error.setContentText("Все поля должны быть заполнены!");
             error.showAndWait();
 
         } else {
             Train train = new Train(
-                    numberField.getText(),
+                    trainNumberField.getText(),
                     departureField.getText(),
                     destinationField.getText()
             );
             GenericDaoImpl<Train, Integer> trainDao = new GenericDaoImpl<Train, Integer>(Train.class);
             train.setId(trainDao.save(train));
-            trainList.add(train);
+            trainList.add(trainDao.get(train.getId()));
 
-            numberField.setText("");
+            trainNumberField.setText("");
             departureField.setText("");
             destinationField.setText("");
-            selectedTrain = null;
         }
 
     }
@@ -116,11 +126,11 @@ public class TrainController {
         Train train = trainTable.getSelectionModel().getSelectedItem();
         if (train != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confitmation");
+            alert.setTitle("Подтверждение");
             alert.setHeaderText(null);
-            alert.setContentText("Do you really want to delete it?");
+            alert.setContentText("Вы действительно хотите удалить этот поезд?");
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.OK){
+            if (result.get() == ButtonType.OK) {
                 GenericDaoImpl<Train, Integer> trainDao = new GenericDaoImpl<Train, Integer>(Train.class);
                 trainDao.delete(train);
                 trainList.remove(train);
@@ -130,8 +140,8 @@ public class TrainController {
 
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("The train haven't selected");
-            alert.setContentText("Please select the train.");
+            alert.setHeaderText("Поезд не выбран");
+            alert.setContentText("Пожалуйста, выберите поезд");
             alert.showAndWait();
 
         }
@@ -142,18 +152,22 @@ public class TrainController {
     public void updateTrain(ActionEvent actionEvent) {
         try {
             GenericDaoImpl<Train, Integer> trainDao = new GenericDaoImpl<Train, Integer>(Train.class);
-            selectedTrain.setNumber(numberField.getText());
+            selectedTrain.setNumber(trainNumberField.getText());
             selectedTrain.setDeparture(departureField.getText());
             selectedTrain.setDestination(destinationField.getText());
             trainDao.update(selectedTrain);
             trainTable.refresh();
         } catch (NullPointerException e) {
             Alert error = new Alert(Alert.AlertType.ERROR);
-            error.setHeaderText("Nothing to update");
-            error.setContentText("Please select the train.");
+            error.setHeaderText("Нечего обновлять");
+            error.setContentText("Пожалуйста, выберите поезд");
             error.showAndWait();
         }
 
+    }
+
+    protected Train getSelectedTrain() {
+        return selectedTrain;
     }
 
 }

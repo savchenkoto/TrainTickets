@@ -1,11 +1,8 @@
 package com.controller;
 
-import com.dao.GenericDao;
 import com.dao.daoImpl.GenericDaoImpl;
-import com.domain.TrainTrip;
-import com.domain.TrainTripStopping;
-import com.domain.Trip;
-import com.domain.Type;
+import com.dao.daoImpl.TripDaoImpl;
+import com.domain.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -20,6 +17,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -98,8 +96,9 @@ public class TripsController {
 
     private void initData() {
         setRowFactory();
-        GenericDaoImpl<Trip, Integer> tripDao = new GenericDaoImpl<Trip, Integer>(Trip.class);
-        initTripList(tripDao.list());
+        TripDaoImpl tripDao = new TripDaoImpl(Trip.class);
+        initTripList(tripDao.getFutureTrains());
+        username.setText(User.getInstance().getCurrent().getName());
     }
 
     private void initTripList(List<Trip> trips) {
@@ -115,12 +114,17 @@ public class TripsController {
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 1 && (!row.isEmpty())) {
                     selectedTrainTrip = row.getItem();
-                    stoppingsList.setAll(selectedTrainTrip.getStoppings());
+                    if (!selectedTrainTrip.getStoppings().isEmpty()) {
+                        stoppingsList.setAll(selectedTrainTrip.getStoppings());
+                    }
                 }
             });
             return row;
         });
     }
+
+    @FXML
+    private Label username;
 
     @FXML
     private void buyButton(ActionEvent actionEvent) {
@@ -129,7 +133,7 @@ public class TripsController {
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setHeaderText(null);
-            alert.setContentText("You have not selected anything.");
+            alert.setContentText("Вы ничего не выбрали");
             alert.showAndWait();
         }
 
@@ -137,14 +141,14 @@ public class TripsController {
 
     private void showBuyingDialog() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/sample/templates/buying.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/view/buying.fxml"));
             Parent root = (Parent)loader.load();
             BuyingController controller = loader.<BuyingController>getController();
             controller.initData(this.selectedTrainTrip);
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.initStyle(StageStyle.DECORATED);
-            stage.setTitle("Buying");
+            stage.setTitle("Покупка");
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
@@ -165,10 +169,10 @@ public class TripsController {
     private TextField toField;
 
     @FXML
-    public ComboBox<Type> typeComboBox;
+    private ComboBox<Type> typeComboBox;
 
     @FXML
-    public Button searchButton;
+    private Button searchButton;
 
     public void find(ActionEvent actionEvent) {
         tripList.setAll(query(
@@ -187,16 +191,16 @@ public class TripsController {
 
     private List<TrainTrip> query(Calendar date, Type type, String departure, String destination) {
 
-        GenericDao<Trip, Integer> tripDao = new GenericDaoImpl<Trip, Integer>(Trip.class);
-        initTripList(tripDao.list());
+        TripDaoImpl tripDao = new TripDaoImpl(Trip.class);
+        initTripList(tripDao.getFutureTrains());
 
         List<TrainTrip> results = new ArrayList<TrainTrip>(tripList);
         if (datePicker.getValue() != null) {
-            String queriedDate = new SimpleDateFormat("MMM dd").format(date.getTime());
+            DateFormat dateFormat = new SimpleDateFormat("MMM dd");
             results = tripList.stream()
-                    .filter(o -> new SimpleDateFormat("MMM dd")
+                    .filter(o -> dateFormat
                             .format(toCalendar(o.getTrip().getDate()).getTime())
-                            .equals(queriedDate))
+                            .equals(dateFormat.format(date.getTime())))
                     .collect(Collectors.toList());
         }
         if (type != null) {
@@ -237,13 +241,33 @@ public class TripsController {
     @FXML
     public void reset(ActionEvent actionEvent) {
 
-        GenericDao<Trip, Integer> tripDao = new GenericDaoImpl<Trip, Integer>(Trip.class);
-        initTripList(tripDao.list());
+        TripDaoImpl tripDao = new TripDaoImpl(Trip.class);
+        initTripList(tripDao.getFutureTrains());
 
         datePicker.setValue(null);
         typeComboBox.setValue(null);
         fromField.clear();
         toField.clear();
+
+    }
+
+    @FXML
+    private Button logoutButton;
+
+    public void logout(ActionEvent actionEvent) {
+        User.getInstance().setCurrent(null);
+        Stage stage = (Stage) logoutButton.getScene().getWindow();
+        stage.close();
+
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/com/view/login.fxml"));
+            Stage newstage = new Stage();
+            newstage.setTitle("Вход");
+            newstage.setScene(new Scene(root));
+            newstage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 }

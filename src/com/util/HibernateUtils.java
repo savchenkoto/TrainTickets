@@ -11,7 +11,7 @@ public class HibernateUtils {
 
     protected static SessionFactory buildSessionFactory() {
         final StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
-                .configure("com/resources/hibernate.cfg.xml")
+                .configure("resources/hibernate.cfg.xml")
                 .build();
         try {
             sessionFactory = new MetadataSources(registry).buildMetadata().buildSessionFactory();

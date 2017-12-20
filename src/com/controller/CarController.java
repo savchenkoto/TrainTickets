@@ -2,7 +2,6 @@ package com.controller;
 
 import com.dao.daoImpl.GenericDaoImpl;
 import com.domain.Car;
-import com.domain.Train;
 import com.domain.Type;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,132 +12,102 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.util.Optional;
 
-public class CarController {
+public class CarController extends TrainController {
 
     private ObservableList<Car> carList = FXCollections.observableArrayList();
-
-    private ObservableList<Train> trainComboBoxList = FXCollections.observableArrayList();
 
     private ObservableList<Type> typeComboBoxList = FXCollections.observableArrayList();
 
     @FXML
-    private TextField numberField;
+    private TableView<Car> carTable;
 
     @FXML
-    public TableView<Car> carTable;
+    private TableColumn<Car, Integer> carNumberColumn;
 
     @FXML
-    public TableColumn<Car, String> trainColumn;
+    private TableColumn<Car, Type> typeColumn;
 
     @FXML
-    public TableColumn<Car, Integer> numberColumn;
+    private Spinner<Double> carNumberSpinner;
 
     @FXML
-    public TableColumn<Car, String> typeColumn;
+    private ComboBox<Type> typeComboBox;
 
-    @FXML
-    public ComboBox<Train> trainComboBox;
-
-    @FXML
-    public ComboBox<Type> typeComboBox;
+    private Car selectedCar;
 
     @FXML
     private void initialize() {
         initData();
 
-        trainColumn.setCellValueFactory(new PropertyValueFactory<Car, String>("trainByTrainId"));
-        numberColumn.setCellValueFactory(new PropertyValueFactory<Car, Integer>("number"));
-        typeColumn.setCellValueFactory(new PropertyValueFactory<Car, String>("typeByTypeId"));
-
-        carTable.setItems(carList);
-        trainComboBox.setItems(trainComboBoxList);
+        carNumberColumn.setCellValueFactory(new PropertyValueFactory<Car, Integer>("number"));
+        typeColumn.setCellValueFactory(new PropertyValueFactory<Car, Type>("typeByTypeId"));
         typeComboBox.setItems(typeComboBoxList);
+        carTable.setItems(carList);
     }
 
     private void initData() {
-        GenericDaoImpl<Car, Integer> carDao = new GenericDaoImpl<Car, Integer>(Car.class);
-        GenericDaoImpl<Train, Integer> trainDao = new GenericDaoImpl<Train, Integer>(Train.class);
+        setCarRowFactory();
         GenericDaoImpl<Type, Integer> typeDao = new GenericDaoImpl<Type, Integer>(Type.class);
-        carList.setAll(carDao.list());
-        trainComboBoxList.setAll(trainDao.list());
         typeComboBoxList.setAll(typeDao.list());
-        setRowFactory();
-        makeNumeric(numberField);
-
-
     }
 
-    private void makeNumeric(TextField textField) {
-        textField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("\\d*")) {
-                textField.setText(newValue.replaceAll("[^\\d]", ""));
-            }
-        });
-    }
-
-    private void setRowFactory() {
+    private void setCarRowFactory() {
         carTable.setRowFactory( tv -> {
             TableRow<Car> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2 && (!row.isEmpty())) {
 
-                    trainComboBox.setValue(row.getItem().getTrainByTrainId());
-                    numberField.setText(String.valueOf(row.getItem().getNumber()));
+                    carNumberSpinner.getValueFactory().setValue(1.);
                     typeComboBox.setValue(row.getItem().getTypeByTypeId());
                     selectedCar = row.getItem();
 
-                } else {
-                    trainComboBox.getSelectionModel().clearSelection();
-                    numberField.setText("");
-                    typeComboBox.getSelectionModel().clearSelection();
-                    selectedCar = null;
-                }
 
+                } else {
+                    typeComboBox.getSelectionModel().clearSelection();
+                }
+                if (event.getClickCount() == 1 && (!row.isEmpty())) {
+                    selectedCar = row.getItem();
+                }
             });
             return row;
         });
     }
 
-    private Car selectedCar;
-
     @FXML
-    public void addButton(ActionEvent actionEvent) {
+    public void addCar(ActionEvent actionEvent) {
 
-        if (
-                trainComboBox.getSelectionModel().isEmpty() ||
-                numberField.getText().trim().isEmpty()  ||
-                typeComboBox.getSelectionModel().isEmpty()) {
+        if (typeComboBox.getSelectionModel().isEmpty()) {
             Alert error = new Alert(Alert.AlertType.ERROR);
-            error.setHeaderText("The data haven't added");
-            error.setContentText("All fields must be filled out");
+            error.setHeaderText("Данные не добавлены");
+            error.setContentText("Все поля должны быть заполнены!");
             error.showAndWait();
 
         } else {
-
             Car car = new Car(
-                    (Train)trainComboBox.getSelectionModel().getSelectedItem(),
-                    Integer.parseInt(numberField.getText()),
-                    (Type)typeComboBox.getSelectionModel().getSelectedItem()
+                    super.getSelectedTrain(),
+                    carNumberSpinner.getValue().intValue(),
+                    typeComboBox.getValue()
             );
             GenericDaoImpl<Car, Integer> carDao = new GenericDaoImpl<Car, Integer>(Car.class);
+
             car.setId(carDao.save(car));
             carList.add(car);
 
-            trainComboBox.getSelectionModel().clearSelection();
-            numberField.setText("");
+            carNumberSpinner.getEditor().clear();
             typeComboBox.getSelectionModel().clearSelection();
         }
+
     }
 
     @FXML
-    public void deleteButton(ActionEvent actionEvent) {
+    public void deleteCar(ActionEvent actionEvent) {
 
         Car car = carTable.getSelectionModel().getSelectedItem();
         if (car != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confitmation");
+            alert.setTitle("Подтверждение");
             alert.setHeaderText(null);
-            alert.setContentText("Do you really want to delete it?");
+            alert.setContentText("Вы действительно хотите удалить этот вагон?");
             Optional<ButtonType> result = alert.showAndWait();
             if (result.get() == ButtonType.OK){
                 GenericDaoImpl<Car, Integer> carDao = new GenericDaoImpl<Car, Integer>(Car.class);
@@ -148,31 +117,38 @@ public class CarController {
                 alert.close();
             }
 
-
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeaderText("The train haven't selected");
-            alert.setContentText("Please select the train.");
+            alert.setHeaderText("Вагон не выбран");
+            alert.setContentText("Пожалуйста, выберите вагон");
             alert.showAndWait();
+
         }
+
     }
 
     @FXML
-    public void updateButton(ActionEvent actionEvent) {
-
+    public void updateCar(ActionEvent actionEvent) {
         try {
-            GenericDaoImpl<Car, Integer> carDao = new GenericDaoImpl<Car, Integer>(Car.class);
-            selectedCar.setNumber(Integer.parseInt(numberField.getText()));
-            selectedCar.setTrainByTrainId(trainComboBox.getValue());
-            selectedCar.setTypeByTypeId(typeComboBox.getValue());
-            carDao.update(selectedCar);
+            GenericDaoImpl<Car, Integer> CarDao = new GenericDaoImpl<Car, Integer>(Car.class);
+
+            CarDao.update(selectedCar);
             carTable.refresh();
         } catch (NullPointerException e) {
             Alert error = new Alert(Alert.AlertType.ERROR);
-            error.setHeaderText("Nothing to update");
-            error.setContentText("Please select the car.");
+            error.setHeaderText("Нечего обновлять");
+            error.setContentText("Пожалуйста, выберите вагон!");
             error.showAndWait();
         }
 
     }
+
+    public TableView<Car> getCarTable() {
+        return this.carTable;
+    }
+
+    public ObservableList<Car> getCarList() {
+        return this.carList;
+    }
+
 }
